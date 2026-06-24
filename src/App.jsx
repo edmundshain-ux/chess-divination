@@ -1339,11 +1339,16 @@ function HistoryPage({records,onBack,isTeacher,onRecordsUpdate}) {
   const [expanded,setExpanded]=useState(null);
   const [editingNote,setEditingNote]=useState({});
   const [savingId,setSavingId]=useState(null);
+  const [savedId,setSavedId]=useState(null);
 
   async function handleSaveNote(id) {
     setSavingId(id);
     const ok=await updateTeacherNote(id, editingNote[id]);
-    if(ok) onRecordsUpdate();
+    if(ok){
+      onRecordsUpdate();
+      setSavedId(id);
+      setTimeout(()=>{setSavedId(null);setExpanded(null);},1200);
+    }
     setSavingId(null);
   }
 
@@ -1417,7 +1422,7 @@ function HistoryPage({records,onBack,isTeacher,onRecordsUpdate}) {
                             resize:"vertical",fontFamily:S.font,boxSizing:"border-box",marginBottom:8}}
                         />
                         <Btn onClick={()=>handleSaveNote(r.id)} style={{marginTop:4}}>
-                          {savingId===r.id?"儲存中...":"💾 儲存老師解盤"}
+                          {savingId===r.id?"儲存中...":savedId===r.id?"✓ 已儲存":"💾 儲存老師解盤"}
                         </Btn>
                       </>
                     ):(
